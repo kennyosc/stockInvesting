@@ -37,11 +37,11 @@ exports.updateUser = async (userData) => {
         const user = await User.findById(userData._id)
         if (!user) return response.errorService(false, 'User not found')
 
-        //kalau set property = undefined, maka property di mongoDB akan hilang
-        //kalau set property = null, maka value property akan menjadi null
+        //if set property = undefined, then the property will be deleted
+        //if set property = null, then property value will be null
         user.name = userData.name
         user.email = userData.email
-        user.noKtp = userData.noKtp ? userData.noKtp : undefined
+        user.noKtp = userData.noKtp
         user.noNpwp = userData.noNpwp
         user.alamat = userData.alamat
         user.kecamatan = userData.kecamatan
@@ -55,6 +55,17 @@ exports.updateUser = async (userData) => {
         await user.save()
 
         return response.successService(true, user)
+
+    } catch (err) {
+        return response.errorService(false, err.message)
+    }
+}
+
+exports.validatePassword = async (password, userPassword) => {
+    try {
+        const isPasswordValid = await bcrypt.compare(password, userPassword)
+        if (!isPasswordValid) return response.errorService(false, 'Email / password is wrong')
+        return response.successService(true)
 
     } catch (err) {
         return response.errorService(false, err.message)

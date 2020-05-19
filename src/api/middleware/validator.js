@@ -16,6 +16,8 @@ exports.validate = (method) => {
                     body('cagr').exists().isFloat().withMessage('Please insert cagr'),
                     body('percentageMos').exists().isFloat().withMessage('Please insert your % margin of safety')
                 ];
+                break;
+                
             case 'user':
                 return [
                     body('name').exists().withMessage('Please insert your name'),
@@ -33,6 +35,13 @@ exports.validate = (method) => {
                     body('noHandphone').exists().withMessage('Please insert your phone number').isNumeric().withMessage('Please insert your phone number with only numbers'),
                     body('jenisKelamin').optional()
                 ];
+                break;
+
+            case 'userLogin':
+                return [
+                    body('email').exists().withMessage('Please insert your email'),
+                    body('password').exists().withMessage('Please insert your password')
+                ]
         }
     } catch (err) {
         return next(err)
