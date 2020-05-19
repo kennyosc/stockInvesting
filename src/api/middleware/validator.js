@@ -6,35 +6,33 @@ exports.validate = (method) => {
         switch (method) {
             case 'inquiry':
                 return [
-                    body('outstandingStock').exists().isFloat(),
-                    body('equity').exists().isFloat(),
-                    body('liability').exists().isFloat(),
-                    body('netProfit').exists().isFloat(),
-                    body('price').exists().isFloat(),
-                    body('financialDate').exists(),
-                    body('inflation').exists().isFloat(),
-                    body('cagr').exists().isFloat(),
-                    body('percentageMos').exists().isFloat()
+                    body('outstandingStock').exists().isFloat().withMessage('Please insert outstanding stock value'),
+                    body('equity').exists().isFloat().withMessage('Please insert equity value'),
+                    body('liability').exists().isFloat().withMessage('Please insert liability value'),
+                    body('netProfit').exists().isFloat().withMessage('Please insert net profit value'),
+                    body('price').exists().isFloat().withMessage('Please insert stock price'),
+                    body('financialDate').exists().withMessage('Please insert your financial date'),
+                    body('inflation').exists().isFloat().withMessage('Please insert inflation'),
+                    body('cagr').exists().isFloat().withMessage('Please insert cagr'),
+                    body('percentageMos').exists().isFloat().withMessage('Please insert your % margin of safety')
                 ];
-                break;
             case 'user':
                 return [
-                    body('name').exists().isAlpha,
+                    body('name').exists().withMessage('Please insert your name'),
                     body('email').exists().custom(async val => {
-                        const user = await User.findOne({ email: val.email })
-                        if (user) return Promise.reject('Email sudah digunakan')
+                        const user = await User.findOne({ email: val })
+                        if (user) throw new Error('Email already in use')
                     }),
-                    body('password').exists(),
+                    body('password').exists().withMessage('Please insert password'),
                     body('noKtp').optional(),
                     body('noNpwp').optional(),
                     body('alamat').optional(),
                     body('kecamatan').optional(),
                     body('kelurahan').optional(),
                     body('kodePos').optional(),
-                    body('noHandphone').exists().isNumeric(),
+                    body('noHandphone').exists().withMessage('Please insert your phone number').isNumeric().withMessage('Please insert your phone number with only numbers'),
                     body('jenisKelamin').optional()
                 ];
-                break;
         }
     } catch (err) {
         return next(err)
