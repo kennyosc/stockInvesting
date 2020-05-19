@@ -4,7 +4,9 @@ const morgan = require('morgan')
 const cors = require('cors')
 const compression = require('compression')
 const helmet = require('helmet')
+const session = require('express-session')
 const routes = require('../api/routes/routes')
+require('dotenv/config')
 
 exports.startServer = async () => {
     const app = express()
@@ -23,6 +25,17 @@ exports.startServer = async () => {
             extended: true
         })
     )
+    app.use(session({
+        name: process.env.nameSession,
+        resave: false,
+        saveUninitialized: false,
+        secret: process.env.secretSession,
+        cookie: {
+            maxAge: 1000 * 60,
+            sameSite: true,
+            secure: false
+        }
+    }))
     app.use(morgan('combined'))
     app.use(cors())
     app.use(compression())

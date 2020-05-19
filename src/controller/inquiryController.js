@@ -26,6 +26,7 @@ exports.inquiryList = async (req, res) => {
     try {
         //.lend() - So its usually optimal for GET endpoints and .find() operations that don’t use .save() or virtuals.
         const inquiryList = await Inquiry.find({}).lean()
+        console.log(req.session)
         return res.status(200).json({ data: inquiryList })
     } catch (err) {
         return res.status(500).json({ message: err.message })
