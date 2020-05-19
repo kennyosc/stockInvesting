@@ -1,7 +1,7 @@
 exports.epsPrediction = (inquiryDate, epsData, cagr) => {
     const arr = []
-    let totalEps = 0
     const date = new Date(inquiryDate)
+    let totalEps = 0
     let tempEps
     let eps
 

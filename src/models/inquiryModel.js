@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 
 const inquirySchema = new mongoose.Schema({
+    kodePerusahaan: String,
     outstandingStock: Number,
     equity: Number,
     liability: Number,
@@ -13,7 +14,25 @@ const inquirySchema = new mongoose.Schema({
     roe: Number,
     pbv: Number,
     per: Number,
-    der: Number
+    der: Number,
+    prediction: {
+        inflation: Number,
+        cagr: Number,
+        calculatedEps: [{
+            year: Number,
+            eps: Number
+        }],
+        totalEps: Number,
+        totalEpsInflation: Number,
+        intrinsicValue: Number,
+        percentageMos: Number,
+        marginOfSafety: Number
+    },
+    user: {
+        type: mongoose.Types.ObjectId,
+        ref: 'User',
+        index: true
+    },
 }, {
     timestamps: true
 })

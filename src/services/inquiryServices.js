@@ -1,20 +1,23 @@
 const response = require('../globalHelper/globalHelper')
 const Inquiry = require('../models/inquiryModel')
-const Prediction = require('../models/predictionModel')
 const helper = require('../globalHelper/epsCalculation')
+const epsCalculator = require('epscalculator')
 
-exports.createInquiry = async (inquiryData) => {
+exports.createInquiry = (inquiryData) => {
     try {
         const newInquiry = new Inquiry()
+        newInquiry.kodePerusahaan = inquiryData.kodePerusahaan
         newInquiry.outstandingStock = inquiryData.outstandingStock
         newInquiry.equity = inquiryData.equity
         newInquiry.liability = inquiryData.liability
         newInquiry.netProfit = inquiryData.netProfit
         newInquiry.price = inquiryData.price
         newInquiry.financialDate = inquiryData.financialDate
-        newInquiry.bookValue = inquiryData.equity / inquiryData.outstandingStock
+        const bookValue = inquiryData.equity / inquiryData.outstandingStock
+        newInquiry.bookValue = bookValue
         newInquiry.marketCap = inquiryData.outstandingStock * inquiryData.price
-        newInquiry.eps = inquiryData.netProfit / inquiryData.outstandingStock
+        const eps = inquiryData.netProfit / inquiryData.outstandingStock
+        newInquiry.eps = eps
 
         let roeDateCalculation
         let perDateCalculation
@@ -33,30 +36,24 @@ exports.createInquiry = async (inquiryData) => {
         newInquiry.per = inquiryData.price / newInquiry.eps * perDateCalculation
         newInquiry.der = inquiryData.liability / inquiryData.equity
 
-        await newInquiry.save()
+        const calcEps = epsCalculator.epsPrediction(inquiryData.financialDate, eps, inquiryData.cagr)
+        const totalEpsInflation = calcEps.totalEps - (calcEps.totalEps * (inquiryData.inflation / 100))
+        const intrinsicValue = totalEpsInflation + bookValue
+        const predict = {
+            inflation: inquiryData.inflation,
+            cagr: inquiryData.cagr,
+            percentageMos: inquiryData.percentageMos,
+            // const calcEps : helper.epsPrediction(inquiryData.financialDate, eps, inquiryData.cagr)
+            calculatedEps: calcEps.arr,
+            totalEps: calcEps.totalEps,
+            totalEpsInflation: totalEpsInflation,
+            intrinsicValue: intrinsicValue,
+            marginOfSafety: intrinsicValue * (1 - (inquiryData.percentageMos / 100)),
+        }
+        newInquiry.prediction = predict
+        // await newInquiry.save()
 
         return response.successService(true, newInquiry)
-    } catch (err) {
-        return response.errorService(false, err.message)
-    }
-}
-
-exports.createPrediction = async (inquiry, data) => {
-    try {
-        const newPrediction = new Prediction()
-        newPrediction.inflation = data.inflation
-        newPrediction.cagr = data.cagr
-        newPrediction.percentageMos = data.percentageMos
-        const calcEps = helper.epsPrediction(inquiry.financialDate, inquiry.eps, data.cagr)
-        newPrediction.calculatedEps = calcEps.arr
-        newPrediction.totalEps = calcEps.totalEps
-        newPrediction.totalEpsInflation = calcEps.totalEps - (calcEps.totalEps * (data.inflation / 100))
-        newPrediction.intrinsicValue = newPrediction.totalEpsInflation + inquiry.bookValue
-        newPrediction.marginOfSafety = newPrediction.intrinsicValue * (1 - (data.percentageMos / 100))
-        newPrediction.inquiryId = inquiry._id
-        await newPrediction.save()
-
-        return response.successService(true, newPrediction)
     } catch (err) {
         return response.errorService(false, err.message)
     }
