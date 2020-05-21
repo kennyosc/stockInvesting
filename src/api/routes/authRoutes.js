@@ -7,6 +7,6 @@ const authentication = require('../middleware/auth')
 Router
     .post('/register', middleware.validate('user'), auth.registerUser)
     .patch('/update-user', authentication, auth.updateUser)
-    .post('/login', middleware.validate('userLogin'), auth.userLogin)
+    .post('/login', middleware.customValidate, auth.userLogin)
 
 module.exports = Router

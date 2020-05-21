@@ -17,7 +17,7 @@ exports.validate = (method) => {
                     body('percentageMos').exists().isFloat().withMessage('Please insert your % margin of safety')
                 ];
                 break;
-                
+
             case 'user':
                 return [
                     body('name').exists().withMessage('Please insert your name'),
@@ -45,5 +45,17 @@ exports.validate = (method) => {
         }
     } catch (err) {
         return next(err)
+    }
+}
+
+exports.customValidate = (req, res, next) => {
+    try {
+        console.log(req.body)
+        const { email, password } = req.body
+        if (!email) return res.status(400).json({ message: 'Please insert your email to login' })
+        if (!password) return res.status(400).json({ message: 'Please insert your password to login' })
+        next()
+    } catch (err) {
+        return res.status(500).json({ message: err.message })
     }
 }
