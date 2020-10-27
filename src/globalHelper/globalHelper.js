@@ -1,24 +1,31 @@
 const { validationResult } = require('express-validator')
 
-exports.successService = (status, data) => {
-    return {
-        status,
-        data
+class globalHelper {
+    static successService(status, data) {
+        return {
+            status,
+            data
+        }
     }
-}
 
-exports.errorService = (status, message) => {
-    return {
-        status,
-        message
+    static errorService(status, message) {
+        return {
+            status,
+            messsage
+        }
     }
-}
 
-exports.validatorErrors = (req) => {
-    const errors = validationResult(req)
-    if (!errors.isEmpty()) {
-        return `${errors.array()[0].msg}`
-    } else {
+    static validatorErrors(req) {
+        const errors = validationResult(req)
+        if (!errors.isEmpty()) return `${errors.array()[0].msg}`
+
         return false
     }
 }
+
+// module.exports = {
+//     globalHelper : globalHelper,
+//     // someClass : someClass
+// }
+
+module.exports = globalHelper

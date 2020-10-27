@@ -1,11 +1,13 @@
 const response = require('../globalHelper/globalHelper')
-const Inquiry = require('../models/inquiryModel')
+// const Inquiry = require('../models/inquiryModel')
+const Inquiry = require('../dao/inquiryDao')
 const helper = require('../globalHelper/epsCalculation')
 const epsCalculator = require('epscalculator')
 
 exports.createInquiry = (inquiryData) => {
     try {
-        const newInquiry = new Inquiry()
+        // const newInquiry = new Inquiry()
+        let newInquiry = {}
         newInquiry.kodePerusahaan = inquiryData.kodePerusahaan
         newInquiry.outstandingStock = inquiryData.outstandingStock
         newInquiry.equity = inquiryData.equity

@@ -1,3 +1,4 @@
+
 const express = require('express')
 const bodyParser = require('body-parser')
 const morgan = require('morgan')
@@ -31,7 +32,7 @@ exports.startServer = async () => {
         saveUninitialized: false,
         secret: process.env.secretSession,
         cookie: {
-            maxAge: 1000 * 60,
+            maxAge: 1000 * 60 * 60,
             sameSite: true,
             secure: false
         }

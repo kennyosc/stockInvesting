@@ -8,5 +8,6 @@ Router
     .post('/register', middleware.validate('user'), auth.registerUser)
     .patch('/update-user', authentication, auth.updateUser)
     .post('/login', middleware.customValidate, auth.userLogin)
+    .get('/session', auth.userSession)
 
 module.exports = Router

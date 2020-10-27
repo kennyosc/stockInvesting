@@ -5,7 +5,7 @@ const middleware = require('../middleware/validator')
 const authentication = require('../middleware/auth')
 
 Router
-    .post('/inquiry', authentication, middleware.validate('inquiry'), inquiry.stockInquiry)
+    .post('/inquiry', middleware.validate('inquiry'), inquiry.stockInquiry)
     .get('/list', inquiry.inquiryList)
 
 module.exports = Router

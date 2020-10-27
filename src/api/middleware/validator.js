@@ -32,7 +32,7 @@ exports.validate = (method) => {
                     body('kecamatan').optional(),
                     body('kelurahan').optional(),
                     body('kodePos').optional(),
-                    body('noHandphone').exists().withMessage('Please insert your phone number').isNumeric().withMessage('Please insert your phone number with only numbers'),
+                    body('noHandphone').exists().withMessage('Please insert your phone number').isNumeric().withMessage('Please insert your phone number with only numbers  '),
                     body('jenisKelamin').optional()
                 ];
                 break;
@@ -50,11 +50,13 @@ exports.validate = (method) => {
 
 exports.customValidate = (req, res, next) => {
     try {
-        console.log(req.body)
+        
         const { email, password } = req.body
         if (!email) return res.status(400).json({ message: 'Please insert your email to login' })
         if (!password) return res.status(400).json({ message: 'Please insert your password to login' })
+
         next()
+
     } catch (err) {
         return res.status(500).json({ message: err.message })
     }
